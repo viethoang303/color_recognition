@@ -4,6 +4,7 @@ import torch
 from torch.nn import functional as F
 import pytorch_lightning as pl
 import torchmetrics
+from torchmetrics import F1Score
 
 from model import AlexNet
 
@@ -14,9 +15,11 @@ class VehicleClassifier(pl.LightningModule):
         self.save_hyperparameters()
         self.backbone = AlexNet()
         self.lr = learning_rate
-        self.train_acc = torchmetrics.Accuracy()
-        self.val_acc = torchmetrics.Accuracy()
-        self.test_acc = torchmetrics.Accuracy()
+        # self.train_acc = torchmetrics.Accuracy()
+        # self.val_acc = torchmetrics.Accuracy()
+        # self.test_acc = torchmetrics.Accuracy()
+
+        self.f1_score = F1Score(num_classes = n_classes)
 
 
     def forward(self, x):
@@ -29,7 +32,7 @@ class VehicleClassifier(pl.LightningModule):
         loss = F.cross_entropy(y_hat, y)
 
         # class_pred = torch.max(y_hat.detach(), dim=1)[1]
-        acc = self.train_acc(y_hat, y)
+        acc = self.f1_score(y_hat, y)
         self.log('train_loss ', loss)
         self.log('train_acc', acc)
 
@@ -39,7 +42,7 @@ class VehicleClassifier(pl.LightningModule):
         x, y, _ = batch
         y_hat = self.backbone(x.float())
         loss = F.cross_entropy(y_hat, y)
-        acc = self.val_acc(y_hat, y)
+        acc = self.f1_score(y_hat, y)
 
         self.log('val_loss', loss)
         # self.log('val_accuracy', acc)
@@ -50,7 +53,7 @@ class VehicleClassifier(pl.LightningModule):
         x, y, _ = batch
         y_hat = self.backbone(x.float())
         loss = F.cross_entropy(y_hat, y)
-        acc = self.test_acc(y_hat, y)
+        acc = self.f1_score(y_hat, y)
         
         self.log('test_loss', loss)
         self.log('test_acc', acc)
