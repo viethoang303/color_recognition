@@ -37,6 +37,7 @@ class WarmupLinearSchedule(LambdaLR):
 class VehicleClassifier(pl.LightningModule):
     def __init__(self, n_classes=14, learning_rate=1e-3):
         super().__init__()
+        self.automatic_optimization = False
         self.save_hyperparameters()
         self.n_classes = n_classes
         self.lr = learning_rate
@@ -53,7 +54,16 @@ class VehicleClassifier(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y, _ = batch
         y_hat = self.forward(x.float())
+
+        opt = self.optimizers()
+        opt.zero_grad()
         loss = F.cross_entropy(y_hat, y)
+        self.manual_backward(loss)
+        opt.step()
+        
+        scheduler = self.lr_schedulers()
+        scheduler.step()
+
         acc = self.acc(y_hat, y)
         f1_score = self.f1_score(y_hat, y)
 
@@ -92,16 +102,16 @@ class VehicleClassifier(pl.LightningModule):
     
         return {'loss': loss, 'test_f1_score': f1_score, 'test_acc': acc ,'y_hat': y_hat, 'y': y} 
 `   
-    def optimizers(self):
-        return torch.optim.Adam(self.parameters(), weight_decay=1e-5)
-    def schedulers(self):
-        return WarmupLinearSchedule(optimizer, warmup_steps=20, t_total=100, inital_lr=self.lr)
-#     def configure_optimizers(self):
-#         # optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, momentum=0.9, weight_decay=0.00001)
-#         # 
-#         optimizer = torch.optim.Adam(self.parameters(), weight_decay=1e-5)#torch.optim.RMSprop(self.parameters(), lr=self.lr)   
-#         lr_scheduler = WarmupLinearSchedule(optimizer, warmup_steps=20, t_total=100, inital_lr=self.lr)#torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
-#         return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}
+    # def optimizers(self):
+    #     return torch.optim.Adam(self.parameters(), weight_decay=1e-5)
+    # def schedulers(self):
+    #     return WarmupLinearSchedule(optimizer, warmup_steps=20, t_total=100, inital_lr=self.lr)
+    def configure_optimizers(self):
+        # optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, momentum=0.9, weight_decay=0.00001)
+        # 
+        optimizer = torch.optim.Adam(self.parameters(), weight_decay=1e-5)#torch.optim.RMSprop(self.parameters(), lr=self.lr)   
+        lr_scheduler = WarmupLinearSchedule(optimizer, warmup_steps=20, t_total=100, inital_lr=self.lr)#torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
+        return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}
     
 
 if __name__ == "__main__":
