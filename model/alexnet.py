@@ -6,7 +6,7 @@ from torch import nn
 class AlexNet(nn.Module):
     def __init__(self, n_classes = 15):
         super(AlexNet,self).__init__()
-        self.n_classes=15
+        self.n_classes=n_classes
         
         # ===============================  top ================================
         # first top convolution layer   

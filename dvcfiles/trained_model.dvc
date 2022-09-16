@@ -1,0 +1,5 @@
+wdir: ../checkpoints
+outs:
+- md5: a17baaecc9e651f90d8a22b2dea375a4
+  size: 529807243
+  path: best-epoch=00-val_f1_score=0.4304.ckpt

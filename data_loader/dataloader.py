@@ -1,12 +1,14 @@
 import torch
 import pytorch_lightning as pl
 from torch.utils.data import Dataset, DataLoader, random_split
+import torchvision
 
 import cv2
-# import PIL
+import PIL
 from typing import Optional
 import os
 import glob
+import numpy as np
 
 def get_fns_lbs(base_dir, map_classification):
     fns = [] # list of all images filenames
@@ -37,23 +39,34 @@ class MyDataset(Dataset):
         self.lbs = labels
         self.transform = transform
         self.n_classes = len(map_classification)
+        # transform = torchvision.transforms.Compose([
+        #     torchvision.transforms.Resize(224, interpolation=torchvision.transforms.InterpolationMode.BICUBIC),
+        #     torchvision.transforms.CenterCrop(224),
+        #     # self._convert_image_to_rgb,
+        #     torchvision.transforms.ToTensor(),
+        #     torchvision.transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711)),
+        # ])
         
+    def _convert_image_to_rgb(self, image):
+        return image.convert("RGB")
+
 
     def __len__(self):
         return len(self.fns)
 
     def __getitem__(self, idx):
         # TODO: replace Image by opencv
-        # image = Image.open(self.fns[idx])
+        # image = PIL.Image.open(self.fns[idx])
         image = cv2.imread(self.fns[idx])
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # image.shape: HWC (100, 100, 3)
         tmp = image[0, 0]
         if isinstance(tmp, int) or len(tmp) != 3:  # not rgb image
             image = image.convert("RGB")
         if self.transform:
-            image = self.transform(image)
+            image = self.transform(torch.tensor(image))
         image = cv2.resize(image, ((224, 224)), interpolation=cv2.INTER_AREA)
-        image = image.transpose(2, 0, 1)  # CHW
+        image = image.transpose(2, 0, 1)/255  # CHW
+
         return image, self.lbs[idx], self.fns[idx]
     
 
@@ -67,15 +80,16 @@ class VehicleDataModule(pl.LightningDataModule):
 
     def setup(self, stage: Optional[str] = None):
         map_classification = get_map_classification(os.path.join(self.data_dir, 'train'))
+
         self.train_set = MyDataset(os.path.join(self.data_dir, "train"), transform=None,
                               map_classification=map_classification)
 
         self.n_classes = self.train_set.n_classes
         self.val_set = MyDataset(os.path.join(self.data_dir, "val"), transform=None,
-                                  map_classification=map_classification)
+                              map_classification=map_classification)
         self.test_set = MyDataset(os.path.join(self.data_dir, "test"), transform=None,
                                   map_classification=map_classification)
-    
+        
     def train_dataloader(self):
         return DataLoader(self.train_set, batch_size=self.batch_size, num_workers = self.num_workers, shuffle=True)
 
@@ -95,7 +109,10 @@ def get_map_classification(base_dir):
 
 
 if __name__ == "__main__":
-    datamodule = VehicleDataModule('vehicle', batch_size=1)
+    datamodule = VehicleDataModule('color_data', batch_size=1)
     datamodule.setup()
     trainloader = datamodule.train_dataloader()
-    print(trainloader.__len__())
+    for i, (image, lbs, fns) in enumerate(trainloader):
+        print('hehe')
+    #     print(input.max(input))
+    # print(trainloader.__len__())

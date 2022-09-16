@@ -6,7 +6,7 @@ from torch.nn import functional as F
 
 import pytorch_lightning as pl
 import torchmetrics
-from torchmetrics import F1Score, ConfusionMatrix
+from torchmetrics import F1Score, ConfusionMatrix, Accuracy
 import torchvision
 import clip
 
@@ -22,6 +22,7 @@ class VehicleClassifier(pl.LightningModule):
         self.n_classes = n_classes
         self.lr = learning_rate
         self.f1_score = F1Score(num_classes = n_classes)
+        self.acc = Accuracy(num_classes=n_classes)
 
         # self.backbone = torchvision.models.efficientnet_v2_s()
         # self.backbone.load_state_dict(torch.load('pretrained_checkpoint_model/efficientnet_v2_s-dd5fe13b.pth'))
@@ -32,7 +33,7 @@ class VehicleClassifier(pl.LightningModule):
         # self.model.load_state_dict(torch.load('vit_b_16_imagenet.pt'))
         # modules = list(self.model.children())[:-1]
         # self.model = nn.Sequential(*list(modules))
-
+        
         self.model = torchvision.models.efficientnet_v2_s(num_classes=n_classes)
         # self.model.load_state_dict(torch.load("pretrained_checkpoint_model/efficientnet_v2_s-dd5fe13b.pth"))
         # modules = list(self.model.children())[:-1]
@@ -57,11 +58,13 @@ class VehicleClassifier(pl.LightningModule):
         x, y, _ = batch
         y_hat = self.forward(x.float())
         loss = F.cross_entropy(y_hat, y)
+        acc = self.acc(y_hat, y)
+        f1_score = self.f1_score(y_hat, y)
 
         # class_pred = torch.max(y_hat.detach(), dim=1)[1]
-        acc = self.f1_score(y_hat, y)
         self.log('train_loss ', loss)
         self.log('train_f1_score', acc)
+        self.log('train_acc', f1_score)
 
         return loss
 
@@ -69,24 +72,29 @@ class VehicleClassifier(pl.LightningModule):
         x, y, _ = batch
         y_hat = self.forward(x.float())
         loss = F.cross_entropy(y_hat, y)
-        acc = self.f1_score(y_hat, y)
+        acc = self.acc(y_hat, y)
+        f1_score = self.f1_score(y_hat, y)
 
         self.log('val_loss', loss)
-        self.log('val_f1_score', acc)
+        self.log('val_acc', acc)
+        self.log('val_f1_score', f1_score)
 
-        return {'loss': loss, 'val_f1_score': acc}
+        return {'loss': loss, 'val_f1_score': f1_score, 'val_acc': acc}
+
     
     def test_step(self, batch, batch_idx):
         x, y, _ = batch
         y_hat = self.forward(x.float())
         loss = F.cross_entropy(y_hat, y)
-        acc = self.f1_score(y_hat, y)
+        acc = self.acc(y_hat, y)
+        f1_score = self.f1_score(y_hat, y)
 
         
         self.log('test_loss', loss)
-        self.log('test_f1_score', acc)
-
-        return {'loss': loss, 'test_f1_score': acc, 'y_hat': y_hat, 'y': y} 
+        self.log('test_acc': acc)
+        self.log('test_f1_score', f1_score)
+    
+        return {'loss': loss, 'test_f1_score': f1_score, 'test_acc': acc ,'y_hat': y_hat, 'y': y} 
 
     # def test_epoch_end(self, outputs):
     #     preds = torch.cat([tmp['y_hat'] for tmp in outputs])
