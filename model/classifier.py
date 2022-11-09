@@ -30,11 +30,11 @@ class VehicleClassifier(pl.LightningModule):
         x, y, _ = batch
         y_hat = self.backbone(x.float())
         loss = F.cross_entropy(y_hat, y)
+        f1_score = self.f1_score(y_hat, y)
 
         # class_pred = torch.max(y_hat.detach(), dim=1)[1]
-        acc = self.f1_score(y_hat, y)
         self.log('train_loss ', loss)
-        self.log('train_acc', acc)
+        self.log('train_acc', f1_score)
 
         return loss
 
@@ -42,23 +42,23 @@ class VehicleClassifier(pl.LightningModule):
         x, y, _ = batch
         y_hat = self.backbone(x.float())
         loss = F.cross_entropy(y_hat, y)
-        acc = self.f1_score(y_hat, y)
+        f1_score = self.f1_score(y_hat, y)
 
         self.log('val_loss', loss)
-        # self.log('val_accuracy', acc)
+        self.log('val_f1_score', f1_score)
 
-        return {'loss': loss, 'val_acc': acc}
+        return {'loss': loss, 'val_f1_score': f1_score}
     
     def test_step(self, batch, batch_idx):
         x, y, _ = batch
         y_hat = self.backbone(x.float())
         loss = F.cross_entropy(y_hat, y)
-        acc = self.f1_score(y_hat, y)
+        f1_score = self.f1_score(y_hat, y)
         
         self.log('test_loss', loss)
-        self.log('test_acc', acc)
+        self.log('test_f1_score', f1_score)
 
-        return {'loss': loss, 'accuracy': acc}
+        return {'loss': loss, 'test_f1_score': f1_score}
         
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
