@@ -9,6 +9,11 @@ from pytorch_lightning.profiler import AdvancedProfiler
 from data_loader import VehicleDataModule, get_map_classification
 from model import VehicleClassifier
 
+
+import torch
+import torchvision
+
+
 def cli_main():
     pl.seed_everything(1234)
     
@@ -33,14 +38,24 @@ def cli_main():
     class_map = get_map_classification('vehicle/train')
     class_map = {value: key for key, value in class_map.items()}
 
-    model = VehicleClassifier(n_classes=data.n_classes)
+    # model = VehicleClassifier(n_classes=data.n_classes)
+    model = torchvision.models.efficientnet_v2_s(num_classes=15)
+
+    checkpoint_callback = ModelCheckpoint(
+        save_top_k = 1, 
+        monitor = 'val_acc',
+        mode = 'max',
+        dirpath = 'checkpoints',
+        filename = "best-{epoch:02d}-{val_acc:.2f}"
+    )
 
     trainer = pl.Trainer.from_argparse_args(
         args, 
-        # profiler=AdvancedProfiler(),
-        # callbacks = [
-        #     ModelCheckpoint(),
-        # ],
+        profiler=AdvancedProfiler(),
+        callbacks = [
+            # ModelCheckpoint(save_top_k=1, monitor='val'),
+            checkpoint_callback
+        ],
         max_epochs=100, 
         accelerator='gpu', 
         devices=[2]
@@ -49,11 +64,8 @@ def cli_main():
     # trainer.fit(model, data)
 
     #Testing#
-    result = trainer.test(model=model, dataloaders=data.test_dataloader(), ckpt_path = 'lightning_logs/version_0/checkpoints/epoch=99-step=11400.ckpt')
-    print(result)
+    # result = trainer.test(model=model, dataloaders=data)#.test_dataloader(), ckpt_path = 'lightning_logs/version_0/checkpoints/epoch=99-step=11400.ckpt')
+    # print(result)
 
 if __name__ == '__main__':
     cli_main()
-
-    
-
