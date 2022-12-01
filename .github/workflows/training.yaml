@@ -3,7 +3,7 @@ on:
   push:
     branches: [baseline]
 jobs:
-  training: 
-    runs_on: ubuntu_latest
+  Training-flow: 
+    runs-on: ubuntu-latest
     steps:
       - run: echo Hello World, today is $TODAY
