@@ -21,8 +21,8 @@ class VehicleClassifier(pl.LightningModule):
         self.save_hyperparameters()
         self.n_classes = n_classes
         self.lr = learning_rate
-        self.f1_score = F1Score(num_classes = n_classes)
-        self.acc = Accuracy(num_classes=n_classes)
+        self.f1_score = F1Score(task='multiclass', num_classes = n_classes)
+        self.acc = Accuracy(num_classes=n_classes) 
 
         # self.backbone = torchvision.models.efficientnet_v2_s()
         # self.backbone.load_state_dict(torch.load('pretrained_checkpoint_model/efficientnet_v2_s-dd5fe13b.pth'))
