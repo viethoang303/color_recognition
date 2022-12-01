@@ -24,6 +24,10 @@ jobs:
     name: training model
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+
       - name: Environment setup
         uses: actions/setup-python@v2
         with:
