@@ -8,7 +8,7 @@ import pytorch_lightning as pl
 import torchmetrics
 from torchmetrics import F1Score, ConfusionMatrix, Accuracy
 import torchvision
-import clip
+# import clip
 
 from collections import OrderedDict
 
@@ -91,7 +91,7 @@ class VehicleClassifier(pl.LightningModule):
 
         
         self.log('test_loss', loss)
-        self.log('test_acc': acc)
+        self.log('test_acc', acc)
         self.log('test_f1_score', f1_score)
     
         return {'loss': loss, 'test_f1_score': f1_score, 'test_acc': acc ,'y_hat': y_hat, 'y': y} 
@@ -111,10 +111,10 @@ class VehicleClassifier(pl.LightningModule):
         
     def configure_optimizers(self):
         # optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, momentum=0.9, weight_decay=0.00001)
-        # lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.25, patience=0)
+        # 
         optimizer = torch.optim.Adamax(self.parameters(), lr=self.lr)   
-        # lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, last_epoch=15)
-        return optimizer#{"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}#torch.optim.Adam(self.parameters(), lr=self.lr)
+        lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.1, patience=10)
+        return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}#torch.optim.Adam(self.parameters(), lr=self.lr)
         # optimizer = torch.optim.RMSprop(self.parameters(), lr=self.lr, weight_decay=0.9, momentum=0.9, eps=0.001)
     
     @staticmethod
