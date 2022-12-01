@@ -4,6 +4,6 @@ on:
     branches: [baseline]
 jobs:
   training: 
-    runs_on: ubuntu_lastest
+    runs_on: ubuntu_latest
     steps:
       - run: echo Hello World, today is $TODAY
