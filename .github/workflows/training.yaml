@@ -1,0 +1,9 @@
+name: Training model
+on:
+  push:
+    branches: [baseline]
+jobs:
+  training: 
+    runs_on: ubuntu_lastest
+    steps:
+      - run: echo Hello World, today is $TODAY
