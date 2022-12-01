@@ -21,7 +21,7 @@ on:
     branches: [baseline]
 jobs:
   Training-flow: 
-    name: training model
+    name: Training-flow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,6 +43,8 @@ jobs:
       - name: Install packages
         run: pip install -r requirements.txt
 
+      - name: training model
+        run: python train.py
       # - name: Pull data
       #   run: |
       #     dvc remote modify origin --local auth basic
