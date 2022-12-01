@@ -67,8 +67,8 @@ def cli_main():
             lr_monitor
         ],
         max_epochs=100, 
-        accelerator='gpu', 
-        devices=[args.device]
+        # accelerator='gpu', 
+        # devices=[args.device]
     )
     
     trainer.fit(model, data)
