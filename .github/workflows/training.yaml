@@ -27,6 +27,8 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v2
+        with: 
+          ref: baseline
 
       - name: Environment setup
         uses: actions/setup-python@v2
