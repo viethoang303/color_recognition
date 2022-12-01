@@ -1,27 +1,51 @@
-name: remote ssh command
-on: [push]
-jobs:
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with:
-        host: aialab01 
-        username: hangd
-        password: hang1234duong
-        port: 22$
-        script: whoami
-
-# name: Training model
-# on:
-#   push:
-#     branches: [baseline]
+# name: remote ssh command
+# on: [push]
 # jobs:
-#   Training-flow: 
+
+#   build:
+#     name: Build
 #     runs-on: ubuntu-latest
 #     steps:
-#       - run: |
-#           pip install -r ${{ github.workspace }}/requirement.txt
+#     - name: executing remote ssh commands using password
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: 112.137.129.122
+#         username: hangd
+#         password: hang1234duong
+#         port: 22033$
+#         script: whoami
+
+name: Training model
+on:
+  push:
+    branches: [baseline]
+jobs:
+  Training-flow: 
+    name: training model
+    runs-on: ubuntu-latest
+    steps:
+      - name: Environment setup
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          cache: pip
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+      
+      - name: Install packages
+        run: pip install -r dev-requirements.txt
+
+      # - name: Pull data
+      #   run: |
+      #     dvc remote modify origin --local auth basic
+      #     dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
+      #     dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+      #     dvc pull -r origin train_model
+
+      # - run: |
+      #     pip install -r ${{ github.workspace }}/requirement.txt
