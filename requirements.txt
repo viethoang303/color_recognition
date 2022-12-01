@@ -1,3 +1,8 @@
 pytorch-lightning
 torch
 torchmetrics
+torchvision
+opencv-python
+PIL
+wandb
+numpy
