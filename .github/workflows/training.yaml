@@ -6,4 +6,4 @@ jobs:
   Training-flow: 
     runs-on: ubuntu-latest
     steps:
-      - run: echo Hello World, today is $TODAY
+      - run: pip install -r requirement.txt
