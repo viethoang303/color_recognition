@@ -12,8 +12,8 @@ import torchvision
 
 from collections import OrderedDict
 
-import pandas as pd
-import matplotlib.pyplot as plt
+# import pandas as pd
+# import matplotlib.pyplot as plt
 
 class VehicleClassifier(pl.LightningModule):
     def __init__(self, n_classes=14, learning_rate=1e-3):
