@@ -66,7 +66,7 @@ def cli_main():
             checkpoint_callback,
             lr_monitor
         ],
-        max_epochs=100, 
+        max_epochs=1, 
         # accelerator='gpu', 
         # devices=[args.device]
     )
