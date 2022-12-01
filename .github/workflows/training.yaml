@@ -44,7 +44,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: training model
-        run: python train.py
+        run: python train.py --n_classes 3
       # - name: Pull data
       #   run: |
       #     dvc remote modify origin --local auth basic
