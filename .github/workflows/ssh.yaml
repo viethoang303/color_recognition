@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using password
-      uses: viethoang303/setup-sshd-actor@master
+      # uses: viethoang303/setup-sshd-actor@master
       with:
         host: hangd #${{ secrets.HOST }}
         username: 112.127.129.122 #${{ secrets.USERNAME }}
