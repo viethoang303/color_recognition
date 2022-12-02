@@ -34,7 +34,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: training model
-        run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-3
+        run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-4
       
       - name: Configure remote storage
         run: |
@@ -42,6 +42,7 @@ jobs:
           dvc remote add -d -f storage gdrive://1thV3eO9jiFq98RP7ybIkr4CC9moUpiYF
           ls ${{github.workspace}}/checkpoints
           dvc add checkpoints/best-checkpoint.ckpt
+          unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
           dvc push checkpoints/best-checkpoint.ckpt.dvc
 
 
