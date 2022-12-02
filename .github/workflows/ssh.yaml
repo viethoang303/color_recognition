@@ -8,8 +8,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-
-    - 
     - name: executing remote ssh commands using password
       uses: viethoang303/setup-sshd-actor@master
       with:
