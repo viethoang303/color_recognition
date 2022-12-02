@@ -5,3 +5,4 @@ torchvision
 opencv-python
 wandb
 numpy
+dvc
