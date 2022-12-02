@@ -16,5 +16,5 @@ jobs:
         host: hangd #${{ secrets.HOST }}
         username: 112.127.129.122 #${{ secrets.USERNAME }}
         password: hang1234duong
-        port: 22033 #${{ secrets.PORT }}
+        port: 22033  #${{ secrets.PORT }}
         script: whoami
