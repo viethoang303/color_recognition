@@ -1,0 +1,18 @@
+name: remote ssh command
+on:
+  push:
+    branches: [baseline]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: hangd #${{ secrets.HOST }}
+        username: 112.137.129.122 #${{ secrets.USERNAME }}
+        password: hang1234duong
+        port: 22 #${{ secrets.PORT }}
+        script: whoami
