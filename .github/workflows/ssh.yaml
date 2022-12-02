@@ -10,12 +10,13 @@ jobs:
     steps:
     - name: executing remote ssh commands using password
       # uses: viethoang303/setup-sshd-actor@master
-      with:
-        host: hangd #${{ secrets.HOST }}
-        username: 112.127.129.122 #${{ secrets.USERNAME }}
-        password: hang1234duong
-        port: 22 #${{ secrets.PORT }}
-        script: whoami
+      run: ssh hangd@112.137.129.122
+        with:
+          #host: hangd #${{ secrets.HOST }}
+          #username: 112.127.129.122 #${{ secrets.USERNAME }}
+          password: hang1234duong
+          port: 22 #${{ secrets.PORT }}
+          script: whoami
 
     # - name: executing remote ssh commands using password
     #   uses: appleboy/ssh-action@master
