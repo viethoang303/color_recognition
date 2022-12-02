@@ -1,63 +1,34 @@
-# name: remote ssh command
-# on: [push]
+# name: Training model
+# on:
+#   push:
+#     branches: [baseline]
 # jobs:
-
-#   build:
-#     name: Build
+#   Training-flow: 
+#     name: Training-flow
 #     runs-on: ubuntu-latest
 #     steps:
-#     - name: executing remote ssh commands using password
-#       uses: appleboy/ssh-action@master
-#       with:
-#         host: 112.137.129.122
-#         username: hangd
-#         password: hang1234duong
-#         port: 22033$
-#         script: whoami
-
-
-
-name: Training model
-on:
-  push:
-    branches: [baseline]
-jobs:
-  Training-flow: 
-    name: Training-flow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v2
-        with: 
-          ref: baseline
+#       - name: Checkout
+#         id: checkout
+#         uses: actions/checkout@v2
+#         with: 
+#           ref: baseline
       
-      - name: Install packages
-        run: pip install -r requirements.txt
+#       - name: Install packages
+#         run: pip install -r requirements.txt
 
-      - name: training model
-        run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-4
+#       - name: training model
+#         run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-4
       
-      - name: Configure remote storage
-        run: |
+#       - name: Configure remote storage
+#         run: |
           
-          # dvc remote modify storage gdrive_client_id '61333394765-4qbd0rofpsv95pk8b2td73nrs06s1g9l.apps.googleusercontent.com'
+#           # dvc remote modify storage gdrive_client_id '61333394765-4qbd0rofpsv95pk8b2td73nrs06s1g9l.apps.googleusercontent.com'
           
-          # dvc remote add -d -f storage gdrive://1thV3eO9jiFq98RP7ybIkr4CC9moUpiYF
-          # dvc remote modify storage gdrive_use_service_account true
-          # dvc remote modify storage gdrive_service_account_json_file_path creds.json
-          # ls ${{github.workspace}}/checkpoints
-          dvc add checkpoints/best-checkpoint.ckpt
+#           # dvc remote add -d -f storage gdrive://1thV3eO9jiFq98RP7ybIkr4CC9moUpiYF
+#           # dvc remote modify storage gdrive_use_service_account true
+#           # dvc remote modify storage gdrive_service_account_json_file_path creds.json
+#           # ls ${{github.workspace}}/checkpoints
+#           dvc add checkpoints/best-checkpoint.ckpt
           
-          dvc push checkpoints/best-checkpoint.ckpt.dvc
+#           dvc push checkpoints/best-checkpoint.ckpt.dvc
 
-#
-      # - name: Pull data
-      #   run: |
-      #     dvc remote modify origin --local auth basic
-      #     dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
-      #     dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
-      #     dvc pull -r origin train_model
-
-      # - run: |
-      #     pip install -r ${{ github.workspace }}/requirement.txt
