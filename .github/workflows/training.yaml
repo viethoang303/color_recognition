@@ -38,8 +38,9 @@ jobs:
       
       - name: Configure remote storage
         run: |
+          dvc init
           dvc remote add -d -f storage gdrive://1thV3eO9jiFq98RP7ybIkr4CC9moUpiYF
-          ls ${{github.workspace}}
+          ls ${{github.workspace}}/checkpoints
           dvc add checkpoints/best-checkpoint.ckpt
           dvc push checkpoints/best-checkpoint.ckpt.dvc
 
