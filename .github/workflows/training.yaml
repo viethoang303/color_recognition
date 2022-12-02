@@ -38,6 +38,7 @@ jobs:
       
       - name: Configure remote storage
         run: |
+          gcloud auth application-default login
           dvc init -f
           dvc remote add -d -f storage gdrive://1thV3eO9jiFq98RP7ybIkr4CC9moUpiYF
           dvc remote modify storage gdrive_use_service_account true
