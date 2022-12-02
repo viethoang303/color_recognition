@@ -28,7 +28,7 @@ def cli_main():
     parser = ArgumentParser()
     parser.add_argument('--batch_size', default=32, type=int)
     parser.add_argument('--num_workers', default=8, type=int)
-    parser.add_argument('--n_classes', default=14, type=int)
+    parser.add_argument('--n_classes', default=3, type=int)
     parser.add_argument('--learning_rate', default=1e-3, type=float)
     parser.add_argument('--data_path', default='color_data', type=str)
     parser.add_argument('--device', default=0, type=int)
