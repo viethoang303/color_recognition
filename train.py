@@ -53,7 +53,7 @@ def cli_main():
         monitor = 'val_loss',
         mode = 'min',
         dirpath = 'checkpoints',
-        filename = "best-{epoch:02d}-{val_f1_score:.4f}"
+        filename = "best-checkpoint.ckpt"#{epoch:02d}-{val_f1_score:.4f}"
     )
 
     lr_monitor = LearningRateMonitor(logging_interval='step')
