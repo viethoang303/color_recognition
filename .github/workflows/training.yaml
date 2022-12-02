@@ -40,8 +40,8 @@ jobs:
         run: |
           dvc remote add -d -f storage gdrive://1thV3eO9jiFq98RP7ybIkr4CC9moUpiYF
           ls ${{github.workspace}}
-          dvc add checkpoints/best_checkpoint.ckpt.dvc
-          dvc push checkpoints/*
+          dvc add checkpoints/best_checkpoint.ckpt
+          dvc push checkpoints/best_checkpoint.ckpt.dvc
 
 
       # - name: Pull data
