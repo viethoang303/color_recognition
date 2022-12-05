@@ -12,7 +12,7 @@ jobs:
       # uses: viethoang303/setup-sshd-actor@master
       uses: garygrossgarten/github-action-ssh@release
       with:
-        command: ls -a
+        #command: ls -a
         host: 112.137.129.122 
         username: hangd
         passphrase: hang1234duong
