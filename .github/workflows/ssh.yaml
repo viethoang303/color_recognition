@@ -10,7 +10,14 @@ jobs:
     steps:
     - name: executing remote ssh commands using password
       # uses: viethoang303/setup-sshd-actor@master
-      run: ssh hangd@112.137.129.122
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: ls -a
+        host: 112.137.129.122 
+        username: hangd
+        passphrase: hang1234duong
+        # privateKey: 
+      # run: ssh hangd@112.137.129.122
       # with:
       #   host: hangd #${{ secrets.HOST }}
       #   username: 112.127.129.122 #${{ secrets.USERNAME }}
