@@ -13,7 +13,6 @@ jobs:
       - name: ssh
         uses: garygrossgarten/github-action-ssh@release
         with: 
-          command: ls -a
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
           passphrase: ${{secrets.PASSWORD}}
