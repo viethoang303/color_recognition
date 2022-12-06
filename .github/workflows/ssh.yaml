@@ -39,10 +39,10 @@ jobs:
     # - name: Stop the server
     #   run: ssh staging 'sudo systemctl stop my-application'
     
-    - name: Checkout the source
-      run: ssh staging 'cd my-application && git fetch && git reset --hard origin/baseline'
+    # - name: Checkout the source
+    #   run: ssh staging 'cd my-application && git fetch && git reset --hard origin/baseline'
 
-    - name: Start the server
-      if: ${{ always() }}
-      run: ssh staging 'sudo systemctl start my-application'
+    # - name: Start the server
+    #   if: ${{ always() }}
+    #   run: ssh staging 'sudo systemctl start my-application'
 #
