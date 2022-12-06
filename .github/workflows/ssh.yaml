@@ -19,6 +19,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+    - name: try something
+      run: ls
     - name: Configure SSH
       run: |
         mkdir -p ~/.ssh/
@@ -36,8 +38,8 @@ jobs:
         SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
         SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
     
-    - name: list files
-      run: ls
+    # - name: list files
+    #   run: ls
     # - name: Stop the server
     #   run: ssh staging 'sudo systemctl stop my-application'
     
