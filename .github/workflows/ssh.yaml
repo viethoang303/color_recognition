@@ -45,8 +45,8 @@ jobs:
         SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
         SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
     
-    # - name: list files
-    #   run: ls
+    - name: list files
+      run: ls
     # - name: Stop the server
     #   run: ssh staging 'sudo systemctl stop my-application'
     
