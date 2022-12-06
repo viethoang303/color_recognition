@@ -19,7 +19,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-<<<<<<< HEAD
     - name: Configure SSH
       run: |
         mkdir -p ~/.ssh/
