@@ -27,7 +27,7 @@ jobs:
       with: 
         ref: baseline
     - name: try something
-      run: ls ${github.workspace}
+      run: ls ${{github.workspace}}
     # - name: Configure SSH
     #   run: |
     #     mkdir -p ~/.ssh/
