@@ -1,19 +1,21 @@
-name: GitHub Actions Basic Flow
+name: Test latest commit
+
 on:
   push:
     branches: [baseline]
+
 jobs:
-  Basic-workflow:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out the repository
+      - name: checkout
         uses: actions/checkout@v2
+
+      - name: ls -a via OPEN SSH Private Key
+        uses: ./
         with:
-          ref: baseline
-      - name: executing remote ssh commands using password
-        uses: garygrossgarten/github-action-ssh@release
-        with:
+          command: ls -a
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          passphrase:
+          password: ${{ secrets.PASSPHRASE }}
           privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
