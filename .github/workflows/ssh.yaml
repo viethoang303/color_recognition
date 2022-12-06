@@ -12,13 +12,20 @@
 #       run: ssh hangd@112.137.129.122
 
 name: remote ssh command
-on: [push]
+on:
+  push:
+    branches: [baseline]
 jobs:
 
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v2
+      with: 
+        ref: baseline
     - name: try something
       run: ls ${github.workspace}
     # - name: Configure SSH
