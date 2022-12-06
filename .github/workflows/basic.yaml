@@ -1,21 +1,21 @@
-name: Test latest commit
+# name: Test latest commit
 
-on:
-  push:
-    branches: [baseline]
+# on:
+#   push:
+#     branches: [baseline]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: checkout
+#         uses: actions/checkout@v2
 
-      - name: ls -a via OPEN SSH Private Key
-        uses: ./
-        with:
-          command: ls -a
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSPHRASE }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
+#       - name: ls -a via OPEN SSH Private Key
+#         uses: ./
+#         with:
+#           command: ls -a
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.USERNAME }}
+#           password: ${{ secrets.PASSPHRASE }}
+#           privateKey: ${{ secrets.SSH_PRIVATE_KEY}}

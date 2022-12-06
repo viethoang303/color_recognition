@@ -1,21 +1,21 @@
-# name: Training model
-# on:
-#   push:
-#     branches: [baseline]
-# jobs:
-#   Training-flow: 
-#     name: Training-flow
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         id: checkout
-#         uses: actions/checkout@v2
-#         with: 
-#           ref: baseline
+name: Training model
+on:
+  push:
+    branches: [baseline]
+jobs:
+  Training-flow: 
+    name: Training-flow
+    runs-on: self-host
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+        with: 
+          ref: baseline
       
-#       - name: Install packages
-#         run: pip install -r requirements.txt
+      - name: Install packages
+        run: pip install -r requirements.txt
 
-#       - name: training model
-#         run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-3
+      - name: training model
+        run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-3
       
