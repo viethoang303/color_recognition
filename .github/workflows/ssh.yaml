@@ -1,13 +1,25 @@
+# name: remote ssh command
+# on:
+#   push:
+#     branches: [baseline]
+# jobs:
+
+#   build:
+#     name: Build
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: SSH to server
+#       run: ssh hangd@112.137.129.122
+
 name: remote ssh command
-on:
-  push:
-    branches: [baseline]
+on: [push]
 jobs:
 
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
+<<<<<<< HEAD
     - name: Configure SSH
       run: |
         mkdir -p ~/.ssh/
@@ -34,6 +46,3 @@ jobs:
     - name: Start the server
       if: ${{ always() }}
       run: ssh staging 'sudo systemctl start my-application'
-
-        
-      
