@@ -11,10 +11,9 @@ jobs:
         with:
           ref: baseline
       - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
+        uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: whoami
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
