@@ -5,7 +5,7 @@ on:
 jobs:
   Training-flow: 
     name: Training-flow
-    runs-on: self-host
+    runs-on: self-hosted
     steps:
       - name: Checkout
         id: checkout
