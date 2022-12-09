@@ -1,3 +1,4 @@
+
 # # name: remote ssh command
 # # on: [push]
 # # jobs:
@@ -39,18 +40,25 @@
 #       #   with:
 #       #     python-version: 3.8
 #       #     cache: pip
+
+name: Training model
+on:
+  push:
+    branches: [baseline]
+jobs:
+  Training-flow: 
+    name: Training-flow
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+        with: 
+          ref: baseline
       
-#       - name: Install packages
-#         run: pip install -r requirements.txt
+      - name: Install packages
+        run: pip install -r requirements.txt
 
-#       - name: training model
-#         run: python train.py --n_classes 3 --data_path sub_data
-#       # - name: Pull data
-#       #   run: |
-#       #     dvc remote modify origin --local auth basic
-#       #     dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
-#       #     dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
-#       #     dvc pull -r origin train_model
-
-#       # - run: |
-#       #     pip install -r ${{ github.workspace }}/requirement.txt
+      - name: training model
+        run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-3 --batch_size 1
+    

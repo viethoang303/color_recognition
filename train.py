@@ -6,7 +6,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.profiler import AdvancedProfiler
 from pytorch_lightning.callbacks import LearningRateMonitor
-from pytorch_lightning.loggers import WandbLogger
+# from pytorch_lightning.loggers import WandbLogger
 
 
 from data_loader import VehicleDataModule, get_map_classification
@@ -28,7 +28,7 @@ def cli_main():
     parser = ArgumentParser()
     parser.add_argument('--batch_size', default=32, type=int)
     parser.add_argument('--num_workers', default=8, type=int)
-    parser.add_argument('--n_classes', default=14, type=int)
+    parser.add_argument('--n_classes', default=3, type=int)
     parser.add_argument('--learning_rate', default=1e-3, type=float)
     parser.add_argument('--data_path', default='color_data', type=str)
     parser.add_argument('--device', default=0, type=int)
@@ -53,7 +53,7 @@ def cli_main():
         monitor = 'val_f1_score',
         mode = 'max',
         dirpath = 'checkpoints',
-        filename = "best-{epoch:02d}-{val_f1_score:.4f}"
+        filename = "best-checkpoint"#{epoch:02d}-{val_f1_score:.4f}"
     )
 
     lr_monitor = LearningRateMonitor(logging_interval='step')

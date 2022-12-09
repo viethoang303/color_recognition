@@ -1,7 +1,10 @@
-pytorch-lightning
 torch
 torchmetrics
 torchvision
+pytorch-lightning
 opencv-python
 wandb
 numpy
+dvc
+dvc-gdrive
+gcloud

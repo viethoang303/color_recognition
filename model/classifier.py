@@ -11,6 +11,7 @@ import torchvision
 # import clip
 
 from collections import OrderedDict
+from .attention import CBAM, BAM
 
 # import pandas as pd
 # import matplotlib.pyplot as plt
@@ -24,7 +25,7 @@ class VehicleClassifier(pl.LightningModule):
         self.f1_score = F1Score(num_classes = n_classes)
         self.acc = Accuracy(num_classes=n_classes) 
 
-        # self.backbone = torchvision.models.efficientnet_v2_s()
+#         self.backbone = torchvision.models.efficientnet_v2_s(pretrained=True)
         # self.backbone.load_state_dict(torch.load('pretrained_checkpoint_model/efficientnet_v2_s-dd5fe13b.pth'))
         # self.model, preprocess = clip.load(clip.load("ViT-L/14", device="cuda"))
         # self.model.float()
@@ -34,12 +35,13 @@ class VehicleClassifier(pl.LightningModule):
         # modules = list(self.model.children())[:-1]
         # self.model = nn.Sequential(*list(modules))
         
-        self.model = torchvision.models.efficientnet_v2_s(num_classes=n_classes)
+        self.model = torchvision.models.efficientnet_v2_s(pretrained=True)
         # self.model.load_state_dict(torch.load("pretrained_checkpoint_model/efficientnet_v2_s-dd5fe13b.pth"))
-        # modules = list(self.model.children())[:-1]
-        # self.model = nn.Sequential(*list(modules))
+        modules = list(self.model.children())[:-1]
+        self.model = nn.Sequential(*list(modules))
         # self.gelu = nn.GeLU(approximate="none")   
-        # self.fc1 = nn.Linear(1280, n_classes, bias=True)
+        self.cbam = CBAM(1280,100)
+        self.fc1 = nn.Linear(1280, n_classes, bias=True)
         # self.model = torchvision.models.resnet50(num_classes=n_classes)
 
 
@@ -49,9 +51,9 @@ class VehicleClassifier(pl.LightningModule):
         #         out = self.model(x)
         # else:
         out = self.model(x)
-        
-        # out = out.squeeze(dim=2).squeeze(dim=2)
-        # out = self.fc1(out)
+        out = self.cbam(out)
+        out = out.squeeze(dim=2).squeeze(dim=2)
+        out = self.fc1(out)
         return out
     
     def training_step(self, batch, batch_idx):
