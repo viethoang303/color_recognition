@@ -21,8 +21,8 @@ class VehicleClassifier(pl.LightningModule):
         self.save_hyperparameters()
         self.n_classes = n_classes
         self.lr = learning_rate
-        self.f1_score = F1Score(task='multiclass', num_classes = n_classes)
-        self.acc = Accuracy(task='multiclass', num_classes=n_classes) 
+        self.f1_score = F1Score(num_classes = n_classes)
+        self.acc = Accuracy(num_classes=n_classes) 
 
         # self.backbone = torchvision.models.efficientnet_v2_s()
         # self.backbone.load_state_dict(torch.load('pretrained_checkpoint_model/efficientnet_v2_s-dd5fe13b.pth'))
@@ -112,18 +112,30 @@ class VehicleClassifier(pl.LightningModule):
     def configure_optimizers(self):
         # optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, momentum=0.9, weight_decay=0.00001)
         # 
-        optimizer = torch.optim.Adamax(self.parameters(), lr=self.lr)   
-        lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.1, patience=10)
+        optimizer = torch.optim.RMSprop(self.parameters(), lr=self.lr)   
+        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
         return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}#torch.optim.Adam(self.parameters(), lr=self.lr)
         # optimizer = torch.optim.RMSprop(self.parameters(), lr=self.lr, weight_decay=0.9, momentum=0.9, eps=0.001)
     
-    @staticmethod
-    def add_model_specific_args(parent_parser):
-        parser = ArgumentParser(parents=[parent_parser], add_help=False)
-        parser.add_argument(
-            '--learning_rate', type=float, default=1e-3, required=False
-        )
-        return parser
+    def optimizer_step(
+        self,
+        epoch,
+        batch_idx,
+        optimizer,
+        optimizer_idx,
+        optimizer_closure,
+        on_tpu=False,
+        using_native_amp=False,
+        using_lbfgs=False,
+        ):
+        # update params
+        optimizer.step(closure=optimizer_closure)
+
+        # skip the first 500 steps
+        if self.trainer.global_step < 50:
+            lr_scale = min(1.0, float(self.trainer.global_step + 1) / 50.0)
+            for pg in optimizer.param_groups:
+                pg["lr"] = lr_scale * self.hparams.learning_rate
 
 if __name__ == "__main__":
     model = VehicleClassifier(n_classes=14)

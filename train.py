@@ -50,8 +50,8 @@ def cli_main():
 
     checkpoint_callback = ModelCheckpoint(
         save_top_k = 1, 
-        monitor = 'val_loss',
-        mode = 'min',
+        monitor = 'val_f1_score',
+        mode = 'max',
         dirpath = 'checkpoints',
         filename = "best-{epoch:02d}-{val_f1_score:.4f}"
     )
@@ -66,9 +66,9 @@ def cli_main():
             checkpoint_callback,
             lr_monitor
         ],
-        max_epochs=1, 
-        # accelerator='gpu', 
-        # devices=[args.device]
+        max_epochs=100, 
+        accelerator='gpu', 
+        devices=[args.device]
     )
     
     trainer.fit(model, data)
