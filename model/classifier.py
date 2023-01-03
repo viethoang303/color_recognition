@@ -28,8 +28,8 @@ class WarmupLinearSchedule(LambdaLR):
 
     def lr_lambda(self, step):
         if step < self.warmup_steps:
-            return inital_lr * float(step) / float(max(1, self.warmup_steps))
-        return inital_lr * max(0.0,(1.0 - float(step))/t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
+            return self.inital_lr * float(step) / float(max(1, self.warmup_steps))
+        return self.inital_lr * max(0.0,(1.0 - float(step))/t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
 
 class VehicleClassifier(pl.LightningModule):
     def __init__(self, n_classes=14, learning_rate=1e-3):
@@ -50,13 +50,13 @@ class VehicleClassifier(pl.LightningModule):
         # modules = list(self.model.children())[:-1]
         # self.model = nn.Sequential(*list(modules))
         
-        self.model = torchvision.models.efficientnet_v2_s(pretrained=True)
+        self.model = torchvision.models.efficientnet_v2_s(num_classes = n_classes)
         # self.model.load_state_dict(torch.load("pretrained_checkpoint_model/efficientnet_v2_s-dd5fe13b.pth"))
-        modules = list(self.model.children())[:-1]
-        self.model = nn.Sequential(*list(modules))
+#         modules = list(self.model.children())[:-1]
+#         self.model = nn.Sequential(*list(modules))
         # self.gelu = nn.GeLU(approximate="none")   
-        self.cbam = CBAM(1280,100)
-        self.fc1 = nn.Linear(1280, n_classes, bias=True)
+#         self.cbam = CBAM(1280,100)
+#         self.fc1 = nn.Linear(1280, n_classes, bias=True)
         # self.model = torchvision.models.resnet50(num_classes=n_classes)
 
 
@@ -66,9 +66,9 @@ class VehicleClassifier(pl.LightningModule):
         #         out = self.model(x)
         # else:
         out = self.model(x)
-        out = self.cbam(out)
-        out = out.squeeze(dim=2).squeeze(dim=2)
-        out = self.fc1(out)
+#         out = self.cbam(out)
+#         out = out.squeeze(dim=2).squeeze(dim=2)
+#         out = self.fc1(out)
         return out
     
     def training_step(self, batch, batch_idx):
