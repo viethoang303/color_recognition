@@ -13,8 +13,20 @@ import torchvision
 from collections import OrderedDict
 from .attention import CBAM, BAM
 
-# import pandas as pd
-# import matplotlib.pyplot as plt
+class WarmupLinearSchedule(LambdaLR):
+    """ Linear warmup and then linear decay.
+        Linearly increases learning rate from 0 to 1 over `warmup_steps` training steps.
+        Linearly decreases learning rate from 1. to 0. over remaining `t_total - warmup_steps` steps.
+    """
+    def __init__(self, optimizer, warmup_steps, t_total, last_epoch=-1):
+        self.warmup_steps = warmup_steps
+        self.t_total = t_total
+        super(WarmupLinearSchedule, self).__init__(optimizer, self.lr_lambda, last_epoch=last_epoch)
+
+    def lr_lambda(self, step):
+        if step < self.warmup_steps:
+            return float(step) / float(max(1, self.warmup_steps))
+        return max(0.0, float(self.t_total - step) / float(self.t_total))
 
 class VehicleClassifier(pl.LightningModule):
     def __init__(self, n_classes=14, learning_rate=1e-3):
@@ -114,30 +126,10 @@ class VehicleClassifier(pl.LightningModule):
     def configure_optimizers(self):
         # optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, momentum=0.9, weight_decay=0.00001)
         # 
-        optimizer = torch.optim.RMSprop(self.parameters(), lr=self.lr)   
-        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
-        return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}#torch.optim.Adam(self.parameters(), lr=self.lr)
-        # optimizer = torch.optim.RMSprop(self.parameters(), lr=self.lr, weight_decay=0.9, momentum=0.9, eps=0.001)
+        optimizer = torch.optim.Adam(self.parameters(), weight_decay=1e-5)#torch.optim.RMSprop(self.parameters(), lr=self.lr)   
+        lr_scheduler = WarmupLinearSchedule(optimizer, warmup_steps=100, t_total=10000)#torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
+        return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}
     
-    def optimizer_step(
-        self,
-        epoch,
-        batch_idx,
-        optimizer,
-        optimizer_idx,
-        optimizer_closure,
-        on_tpu=False,
-        using_native_amp=False,
-        using_lbfgs=False,
-        ):
-        # update params
-        optimizer.step(closure=optimizer_closure)
-
-        # skip the first 500 steps
-        if self.trainer.global_step < 50:
-            lr_scale = min(1.0, float(self.trainer.global_step + 1) / 50.0)
-            for pg in optimizer.param_groups:
-                pg["lr"] = lr_scale * self.hparams.learning_rate
 
 if __name__ == "__main__":
     model = VehicleClassifier(n_classes=14)
