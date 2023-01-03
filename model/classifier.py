@@ -20,7 +20,7 @@ class WarmupLinearSchedule(LambdaLR):
         Linearly increases learning rate from 0 to 1 over `warmup_steps` training steps.
         Linearly decreases learning rate from 1. to 0. over remaining `t_total - warmup_steps` steps.
     """
-    def __init__(self, optimizer, warmup_steps, t_total, last_epoch=-1):
+    def __init__(self, optimizer, warmup_steps, t_total, inital_lr, last_epoch=-1):
         self.warmup_steps = warmup_steps
         self.t_total = t_total
         self.inital_lr = inital_lr
@@ -28,8 +28,8 @@ class WarmupLinearSchedule(LambdaLR):
 
     def lr_lambda(self, step):
         if step < self.warmup_steps:
-            return float(step) / float(max(1, self.warmup_steps))
-        return max(0.0,(1.0 - float(step))/t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
+            return inital_lr * float(step) / float(max(1, self.warmup_steps))
+        return inital_lr * max(0.0,(1.0 - float(step))/t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
 
 class VehicleClassifier(pl.LightningModule):
     def __init__(self, n_classes=14, learning_rate=1e-3):
@@ -130,7 +130,7 @@ class VehicleClassifier(pl.LightningModule):
         # optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, momentum=0.9, weight_decay=0.00001)
         # 
         optimizer = torch.optim.Adam(self.parameters(), weight_decay=1e-5)#torch.optim.RMSprop(self.parameters(), lr=self.lr)   
-        lr_scheduler = WarmupLinearSchedule(optimizer, warmup_steps=100, t_total=10000)#torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
+        lr_scheduler = WarmupLinearSchedule(optimizer, warmup_steps=5040, t_total=25200)#torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
         return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}
     
 
