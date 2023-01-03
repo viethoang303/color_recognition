@@ -1,20 +1,45 @@
 
-# # name: remote ssh command
-# # on: [push]
-# # jobs:
+# # # name: remote ssh command
+# # # on: [push]
+# # # jobs:
 
-# #   build:
-# #     name: Build
+# # #   build:
+# # #     name: Build
+# # #     runs-on: ubuntu-latest
+# # #     steps:
+# # #     - name: executing remote ssh commands using password
+# # #       uses: appleboy/ssh-action@master
+# # #       with:
+# # #         host: 112.137.129.122
+# # #         username: hangd
+# # #         password: hang1234duong
+# # #         port: 22033$
+# # #         script: whoami
+
+# # name: Training model
+# # on:
+# #   push:
+# #     branches: [baseline]
+# # jobs:
+# #   Training-flow: 
+# #     name: Training-flow
 # #     runs-on: ubuntu-latest
 # #     steps:
-# #     - name: executing remote ssh commands using password
-# #       uses: appleboy/ssh-action@master
-# #       with:
-# #         host: 112.137.129.122
-# #         username: hangd
-# #         password: hang1234duong
-# #         port: 22033$
-# #         script: whoami
+# #       - name: Checkout
+# #         id: checkout
+# #         uses: actions/checkout@v2
+# #         with: 
+# #           ref: baseline
+
+# #       # - name: Checkout
+# #       #   id: checkout
+# #       #   uses: actions/checkout@v2
+
+# #       # - name: Environment setup
+# #       #   uses: actions/setup-python@v2
+# #       #   with:
+# #       #     python-version: 3.8
+# #       #     cache: pip
 
 # name: Training model
 # on:
@@ -23,42 +48,17 @@
 # jobs:
 #   Training-flow: 
 #     name: Training-flow
-#     runs-on: ubuntu-latest
+#     runs-on: self-hosted
 #     steps:
 #       - name: Checkout
 #         id: checkout
 #         uses: actions/checkout@v2
 #         with: 
 #           ref: baseline
-
-#       # - name: Checkout
-#       #   id: checkout
-#       #   uses: actions/checkout@v2
-
-#       # - name: Environment setup
-#       #   uses: actions/setup-python@v2
-#       #   with:
-#       #     python-version: 3.8
-#       #     cache: pip
-
-name: Training model
-on:
-  push:
-    branches: [baseline]
-jobs:
-  Training-flow: 
-    name: Training-flow
-    runs-on: self-hosted
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v2
-        with: 
-          ref: baseline
       
-      - name: Install packages
-        run: pip install -r requirements.txt
+#       - name: Install packages
+#         run: pip install -r requirements.txt
 
-      - name: training model
-        run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-3 --batch_size 1
+#       - name: training model
+#         run: python train.py --n_classes 3 --data_path sub_data --learning_rate 1e-3 --batch_size 1
     
