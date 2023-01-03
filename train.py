@@ -6,7 +6,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.profiler import AdvancedProfiler
 from pytorch_lightning.callbacks import LearningRateMonitor
-# from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.loggers import WandbLogger
 
 
 from data_loader import VehicleDataModule, get_map_classification
@@ -16,7 +16,7 @@ from model import VehicleClassifier
 import torch
 import torchvision
 
-# wandb_logger = WandbLogger(project="MLOps Basics")
+wandb_logger = WandbLogger(project="MLOps Basics")
 
 
 def cli_main():
@@ -60,13 +60,13 @@ def cli_main():
 
     trainer = pl.Trainer.from_argparse_args(
         args, 
-        # logger = wandb_logger,
+        logger = wandb_logger,
         profiler=AdvancedProfiler(),
         callbacks = [
             checkpoint_callback,
             lr_monitor
         ],
-        max_epochs=100, 
+        max_epochs=200, 
         accelerator='gpu', 
         devices=[args.device]
     )
