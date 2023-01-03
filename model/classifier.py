@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 import torch
 from torch import nn
 from torch.nn import functional as F
-from torch.optim.lr_scheduler import CosineAnnealingLR, CyclicLR, LambdaLR, ReduceLROnPlateau, 
+from torch.optim.lr_scheduler import CosineAnnealingLR, CyclicLR, LambdaLR, ReduceLROnPlateau, StepLR
 
 import pytorch_lightning as pl
 import torchmetrics
