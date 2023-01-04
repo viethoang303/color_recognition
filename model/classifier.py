@@ -29,7 +29,7 @@ class WarmupLinearSchedule(LambdaLR):
     def lr_lambda(self, step):
         if step < self.warmup_steps:
             return self.inital_lr * float(step) / float(max(1, self.warmup_steps))
-        return self.inital_lr * max(0.0,(1.0 - float(step))/self.t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
+        return self.inital_lr * max(0.0,1.0 - float(step)/self.t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
 
 class VehicleClassifier(pl.LightningModule):
     def __init__(self, n_classes=14, learning_rate=1e-3):
