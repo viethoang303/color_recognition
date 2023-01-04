@@ -101,7 +101,7 @@ class VehicleClassifier(pl.LightningModule):
         self.log('test_f1_score', f1_score)
     
         return {'loss': loss, 'test_f1_score': f1_score, 'test_acc': acc ,'y_hat': y_hat, 'y': y} 
-`   
+ 
     # def optimizers(self):
     #     return torch.optim.Adam(self.parameters(), weight_decay=1e-5)
     # def schedulers(self):
