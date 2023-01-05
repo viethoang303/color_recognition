@@ -102,13 +102,10 @@ class VehicleClassifier(pl.LightningModule):
     
         return {'loss': loss, 'test_f1_score': f1_score, 'test_acc': acc ,'y_hat': y_hat, 'y': y} 
  
-    # def optimizers(self):
-    #     return torch.optim.Adam(self.parameters(), weight_decay=1e-5)
-    # def schedulers(self):
-    #     return WarmupLinearSchedule(optimizer, warmup_steps=20, t_total=100, inital_lr=self.lr)
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), weight_decay=1e-5)#torch.optim.RMSprop(self.parameters(), lr=self.lr)   
-        lr_scheduler = WarmupLinearSchedule(optimizer, warmup_steps=252, t_total=12600, inital_lr=self.lr)#torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
+        # torch.optim.Adam(self.parameters(), weight_decay=1e-5)
+        optimizer = torch.optim.RMSprop(self.parameters(), weight_decay=0.9, momentum=0.9)   
+        lr_scheduler = WarmupLinearSchedule(optimizer, warmup_steps=100, t_total=16000, inital_lr=self.lr)#torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100)
         return {"optimizer": optimizer, "lr_scheduler": lr_scheduler, "monitor": "val_f1_score"}
     
 
