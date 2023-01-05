@@ -22,16 +22,20 @@ class WarmupLinearSchedule(LambdaLR):
         Linearly increases learning rate from 0 to 1 over `warmup_steps` training steps.
         Linearly decreases learning rate from 1. to 0. over remaining `t_total - warmup_steps` steps.
     """
-    def __init__(self, optimizer, warmup_steps, t_total, inital_lr, last_epoch=-1):
+    def __init__(self, optimizer, warmup_steps, t_total, inital_lr, lr_decay_type, last_epoch=-1):
         self.warmup_steps = warmup_steps
         self.t_total = t_total
         self.inital_lr = inital_lr
+        self.lr_decay_type = lr_decay_type
         super(WarmupLinearSchedule, self).__init__(optimizer, self.lr_lambda, last_epoch=last_epoch)
 
     def lr_lambda(self, step):
         if step < self.warmup_steps:
             return self.inital_lr * float(step) / float(max(1, self.warmup_steps))
-        return self.inital_lr * max(0.0,1.0 - float(step)/self.t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
+        else:
+            if self.lr_decay_type == "linear":
+                return self.inital_lr * max(0.0,1.0 - float(step)/self.t_total)    #max(0.0, float(self.t_total - step) / float(self.t_total))
+            return 0.5 * self.initial_lr * (1 + math.cos(math.pi * float(step) / self.total_steps))
     
 
 class VehicleClassifier(pl.LightningModule):
